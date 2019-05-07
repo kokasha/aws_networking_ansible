@@ -1,0 +1,29 @@
+- name: Create US Network
+  hosts: us
+
+  #vars_files: us_vpc.yml
+  tasks:
+    - name: Create New VPC
+      ec2_vpc_net:
+        cidr_block: "{{ vpc_cidr }}"
+        region: "{{ aws_region }}"
+        name: "{{ vpc_name }}"
+        state: present
+        tags: "{{ vpc_tags }}"
+      tags: [vpc]
+
+    - name: Get all VPC Facts
+      ec2_vpc_net_facts:
+        region: "{{ region }}"
+        filters:
+          "tag:Name": "{{ item.name }}"
+      loop: "{{ vpcs }}"
+      register: vpc_facts
+      #tags: [vpc,igw]
+
+    - debug: var=vpc_facts
+
+    - set_fact: vpc_ids={{vpc_facts.results|map(attribute='vpc_id')|list|first}}
+      tags: [vpc,igw]
+
+    - debug: var=vpc_id

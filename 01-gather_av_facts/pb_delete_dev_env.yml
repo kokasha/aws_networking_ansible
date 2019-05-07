@@ -1,0 +1,44 @@
+- name: Get All Availability Zones
+  hosts: localhost
+  connection: local
+  gather_facts: no
+  vars_files: aws_vars.yml
+  vars:
+    VPC_STATE: absent
+  tasks:
+    - name: Get all VPC Facts
+      ec2_vpc_net_facts:
+        region: "{{ dev_env.region }}"
+        filters:
+          "tag:Name": "{{ dev_env.vpc.name }}"
+      register: vpc_facts
+      tags: [vpc]
+    
+    #- debug: var=vpc_facts
+    - block:
+      - set_fact: vpc_id={{vpc_facts.vpcs|map(attribute='vpc_id')|list|first}}
+      - debug: var=vpc_id
+      - name: Delete Subnets
+        ec2_vpc_subnet:
+          region: "{{ dev_env.region }}"
+          cidr: "{{ item.cidr }}"
+          vpc_id: "{{ vpc_id }}" 
+          state: absent
+        with_items: "{{dev_env.subnets}}"
+        when: vpc_id != []
+
+      - name: Delete IGW
+        ec2_vpc_igw:
+          region: "{{ dev_env.region }}"
+          vpc_id: "{{ vpc_id }}"
+          state: absent
+
+      - name: Delete VPC
+        ec2_vpc_net:
+          cidr_block: "{{ dev_env.vpc.cidr }}"
+          region: "{{ dev_env.region }}"
+          name: "{{ dev_env.vpc.name }}"
+          state: "{{ VPC_STATE }}"
+        register: dev_vpc
+      when: vpc_facts.vpcs != []
+      tags: [vpc]

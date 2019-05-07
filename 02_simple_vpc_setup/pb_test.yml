@@ -1,0 +1,18 @@
+---
+- name: combine DICT
+  hosts: localhost
+  vars:
+    vpc:
+      name: test1
+      region: us
+
+  tasks:
+    - name: SET NET FACT
+      set_fact: 
+        vpc_id: 'vpc-1234'
+    # - name: Setup for DICT CONCAT
+    #   set_fact:
+    #     lot: ('id',"{{vpc_id}}")
+    - set_fact:
+        vpc: "{{ vpc | combine({'id':vpc_id}) }}"
+    - debug: var=vpc 

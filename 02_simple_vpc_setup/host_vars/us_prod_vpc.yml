@@ -1,0 +1,13 @@
+vpc_name: US_Prod_Public_VPC
+vpc_cidr: 10.1.0.0/16
+
+vpc_subnets:
+  public-a:
+    cidr: 10.1.1.0/24
+    az: "{{ aws_region }}a"
+    public: true
+
+  public-b:
+    cidr: 10.1.2.0/24
+    az: "{{ aws_region}}b"
+    public: true
