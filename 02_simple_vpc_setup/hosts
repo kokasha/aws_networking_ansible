@@ -1,5 +1,5 @@
 [us]
-us_prod_vpc
+us_prod_vpc ansible_connection=local
 
 [eu]
 eu_nonprod_vpc

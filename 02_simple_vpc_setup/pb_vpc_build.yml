@@ -1,5 +1,8 @@
 - name: Create US Network
   hosts: us
+  environment:
+    AWS_ACCESS_KEY: "{{ aws_access_key }}"
+    AWS_SECRET_KEY: "{{ aws_secret_key_id }}"
 
   #vars_files: us_vpc.yml
   tasks:
@@ -11,6 +14,7 @@
         state: present
         tags: "{{ vpc_tags }}"
       tags: [vpc]
+      #delegate_to: localhost
 
     - name: Get all VPC Facts
       ec2_vpc_net_facts:
@@ -23,7 +27,7 @@
 
     - debug: var=vpc_facts
 
-    - set_fact: vpc_ids={{vpc_facts.results|map(attribute='vpc_id')|list|first}}
-      tags: [vpc,igw]
+    # - set_fact: vpc_ids={{vpc_facts.results|map(attribute='vpc_id')|list|first}}
+    #   tags: [vpc,igw]
 
     - debug: var=vpc_id

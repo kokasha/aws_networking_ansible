@@ -11,3 +11,8 @@ vpc_subnets:
     cidr: 10.1.2.0/24
     az: "{{ aws_region}}b"
     public: true
+
+vpc_tags:
+  role: prod
+  region: US
+  
