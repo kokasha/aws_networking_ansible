@@ -24,10 +24,10 @@
         
         - name: Create Subnet tags
           set_fact: 
-            vpc_subnets: "{{ item.value | combine({'tags': {}})}}"
+            subnet_tags: "{{ {'Name':item.key} | combine(vpc_tags) }}"
           with_dict: "{{ vpc_subnets }}"
           tags: subnet_tags
-        - debug: var=vpc_subnets
+        - debug: var=subnet_tags
           tags: subnet_tags
 
         - debug: var=vpc_id
