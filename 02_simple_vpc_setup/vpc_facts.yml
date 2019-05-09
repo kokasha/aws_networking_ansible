@@ -7,3 +7,4 @@
     AWS_REGION: "{{ aws_region }}"
   tasks:
     - include_tasks: tasks/vpc_facts.yml
+      delegate_to: localhost

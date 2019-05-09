@@ -1,18 +1,16 @@
 ---
-- name: combine DICT
+- name: TEST with LOCALHOST
   hosts: localhost
-  vars:
-    vpc:
-      name: test1
-      region: us
+  gather_facts: no
 
   tasks:
-    - name: SET NET FACT
-      set_fact: 
-        vpc_id: 'vpc-1234'
-    # - name: Setup for DICT CONCAT
-    #   set_fact:
-    #     lot: ('id',"{{vpc_id}}")
-    - set_fact:
-        vpc: "{{ vpc | combine({'id':vpc_id}) }}"
-    - debug: var=vpc 
+    - name: LOCALHOST >> python_facts
+      python_requirements_facts: 
+
+- name: TEST with CONNECTION LOCAL
+  hosts: us
+  gather_facts: no
+
+  tasks:
+    - name: CONNECTION LOCAL >> python_facts
+      python_requirements_facts: 

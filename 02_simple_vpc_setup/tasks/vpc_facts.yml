@@ -24,4 +24,13 @@
       set_fact:
         subnet_ids: "{{subnet_ids | default({}) | combine({item.tags.Name: item.id}) }}"
       with_items: "{{vpc_subnet_facts.subnets}}"
+
+    - name: Get IGW facts
+      ec2_vpc_igw_facts:
+        filters:
+          vpc-id: "{{ vpc_id }}"
+      register: vpc_igw_facts
+      tags:
+        - igw
+    - debug: var=vpc_igw_facts
   when: vpc_facts.vpcs != []
