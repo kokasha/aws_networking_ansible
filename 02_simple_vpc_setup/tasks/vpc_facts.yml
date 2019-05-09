@@ -1,0 +1,27 @@
+- name: Get VPC facts
+  ec2_vpc_net_facts:
+    filters:
+      "tag:Name": "{{ vpc_name }}"
+  register: vpc_facts
+  tags:
+    - vpc-id
+- debug: var=vpc_facts
+
+- block:
+    - name: Extract VPC ID
+      set_fact:
+        vpc_id: "{{ vpc_facts.vpcs[0].id }}"
+      tags:
+        - vpc-id
+
+    - name: Get Subnet facts
+      ec2_vpc_subnet_facts:
+        filters:
+          vpc-id: "{{ vpc_id }}"
+      register: vpc_subnet_facts
+
+    - name: Extract Subnet IDs
+      set_fact:
+        subnet_ids: "{{subnet_ids | default({}) | combine({item.tags.Name: item.id}) }}"
+      with_items: "{{vpc_subnet_facts.subnets}}"
+  when: vpc_facts.vpcs != []

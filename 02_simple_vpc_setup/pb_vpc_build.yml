@@ -1,5 +1,6 @@
 - name: Create US Network
   hosts: us
+  gather_facts: no
   environment:
     AWS_ACCESS_KEY: "{{ aws_access_key }}"
     AWS_SECRET_KEY: "{{ aws_secret_key_id }}"
@@ -14,35 +15,21 @@
             tags: "{{ vpc_tags }}"
           tags: [vpc]
           register: create_vpc
-          #delegate_to: localhost
-
-        - debug: var=create_vpc
 
         - name: "set fact: VPC ID"
           set_fact:
             vpc_id: "{{ create_vpc.vpc.id }}"
-        
-        - name: Create Subnet tags
-          set_fact: 
-            vpc_subnets: "{{ item.value | combine({'tags': {}})}}"
-          with_dict: "{{ vpc_subnets }}"
-          tags: subnet_tags
-        - debug: var=vpc_subnets
-          tags: subnet_tags
 
-        - debug: var=vpc_id
         - name: create VPC subnets
           ec2_vpc_subnet:
             region: "{{ aws_region }}"
             vpc_id: "{{ vpc_id }}"
             cidr: "{{ item.value.cidr }}"
             az: "{{ item.value.az }}"
-            tags:
-              Name: "{{ item.key }}"
+            tags: "{{item.value.tags | combine({ 'Name': item.key })}}"
           with_dict: "{{ vpc_subnets }}"
           register: create_vpc_subnets
 
-        - debug: var=create_vpc_subnets
 
         - name: Get VPC Subnets IDs
           set_fact:
@@ -50,4 +37,13 @@
           with_items: "{{ create_vpc_subnets.results }}"
 
         - debug: var=vpc_subnet_ids
-      delegate_to: localhost
+
+        - name: Create IGW
+          ec2_vpc_igw:
+            region: "{{ aws_region }}"
+            vpc_id: "{{ vpc_id }}" 
+            state: present
+            tags: "{{ vpc_tags | combine({'Name': igw_name}) }}"
+          tags:
+            - igw
+      #delegate_to: localhost

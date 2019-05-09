@@ -1,4 +1,4 @@
-ansible_connection: local
+#ansible_connection: local
 aws_access_key: !vault |
           $ANSIBLE_VAULT;1.1;AES256
           32376636323030663863663734643831386661353165616666613034666430393561326138356432
