@@ -17,7 +17,6 @@
             vpc_id: "{{ vpc_id }}" 
             state: absent
           with_dict: "{{ vpc_subnets }}"
-          #when: vpc_id != []
 
         - name: Delete IGW
           ec2_vpc_igw:

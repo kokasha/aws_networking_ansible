@@ -3,13 +3,13 @@ vpc_cidr: 10.1.0.0/16
 igw_name: us_prod_igw
 
 vpc_subnets:
-  us-public-a:
+  us-prod-public-a:
     cidr: 10.1.1.0/24
     az: "{{ aws_region }}a"
     tags: "{{ vpc_tags }}"
     public: true
 
-  us-public-b:
+  us-prod-public-b:
     cidr: 10.1.2.0/24
     az: "{{ aws_region}}b"
     tags: "{{ vpc_tags }}"

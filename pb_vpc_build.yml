@@ -1,5 +1,5 @@
-- name: Create US Network
-  hosts: us
+- name: Create all VPCs
+  hosts: vpcs
   gather_facts: no
   environment:
     AWS_ACCESS_KEY: "{{ aws_access_key }}"
@@ -35,12 +35,10 @@
         with_dict: "{{ vpc_subnets }}"
         register: create_vpc_subnets
 
-
       - name: Get VPC Subnets IDs
         set_fact:
           vpc_subnet_ids: "{{ vpc_subnet_ids | default({}) | combine({ item.subnet.tags.Name: item.subnet.id }) }}"
         with_items: "{{ create_vpc_subnets.results }}"
-
 
       - name: Create IGW
         ec2_vpc_igw:
@@ -51,8 +49,7 @@
         register: vpc_igw_create
         tags:
           - igw
-      # - debug: var=vpc_igw_create
-      #   tags: igw
+
       - name: Extract VPC IGW ID
         set_fact:
           igw_id: "{{ vpc_igw_create.gateway_id }}"
