@@ -1,6 +1,7 @@
 vpc_name: US_Prod_Public_VPC
 vpc_cidr: 10.1.0.0/16
 igw_name: us_prod_igw
+igw: true
 
 vpc_subnets:
   us-public-a:
@@ -18,4 +19,15 @@ vpc_subnets:
 vpc_tags:
   role: prod
   region: US
-  
+
+route_table:
+  tags:
+    Name: us_public_rt
+  igw:
+    - dest: 0.0.0.0/0
+      gateway_id: "{{ igw_id }}"
+  public:
+      - us-public-a
+      - us-public-b
+
+
