@@ -1,7 +1,6 @@
 vpc_name: US_Prod_Public_VPC
 vpc_cidr: 10.1.0.0/16
 igw_name: us_prod_igw
-igw: true
 
 vpc_subnets:
   us-public-a:
