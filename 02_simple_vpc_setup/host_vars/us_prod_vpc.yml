@@ -16,10 +16,6 @@ vpc_subnets:
     tags: "{{ vpc_tags }}"
     public: true
 
-vpc_tags:
-  role: prod
-  region: US
-
 route_table:
   tags:
     Name: us_public_rt
@@ -29,5 +25,9 @@ route_table:
   public:
       - us-public-a
       - us-public-b
+
+vpc_tags:
+  role: prod
+  region: US
 
 

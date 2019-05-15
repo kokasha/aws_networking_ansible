@@ -1,1 +1,5 @@
 .vscode/
+.vagrant/
+testing/
+diagrams/
+Vagrantfile
